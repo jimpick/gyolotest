@@ -3,11 +3,14 @@ import {html, render} from 'https://unpkg.com/lit-html?module';
 const clientId = '777999046647-l1423mpflvhsnovrsot8uu9921p10prc.apps.googleusercontent.com'
 
 const bodyTemplate = ({loggedIn, cred, disableAutoSignIn}) => {
+  const picture = loggedIn && cred.profilePicture && html`
+      <li><img src="${cred.profilePicture}"></li>
+  `
   const profile = loggedIn && cred && html`
     <ul>
       <li>${cred.displayName}</li>
       <li>${cred.id}</li>
-      <li><img src="${cred.profilePicture}"></li>
+      ${picture}
       <li><button @click=${logout}>Logout</button></li>
     </ul>
   `
@@ -23,14 +26,14 @@ const bodyTemplate = ({loggedIn, cred, disableAutoSignIn}) => {
   function logout (e) {
     console.log('logout')
     disableAutoSignIn()
-      .then(() => {
-        // Auto sign-in disabled.
-        state.loggedIn = false
-        r()
-      })
-      .catch(err => {
-        console.error('Error', err)
-      })
+    .then(() => {
+      // Auto sign-in disabled.
+      state.loggedIn = false
+      r()
+    })
+    .catch(err => {
+      console.error('Error', err)
+    })
   }
 }
 
@@ -49,7 +52,7 @@ r()
 window.onGoogleYoloLoad = (googleyolo) => {
   // The 'googleyolo' object is ready for use.
   console.log('Jim ready', googleyolo)
-  state.disableAutoSignIn = googleyolo.disableAutoSignIn
+  state.disableAutoSignIn = googleyolo.disableAutoSignIn.bind(googleyolo)
 
   const retrievePromise = googleyolo.retrieve({
     supportedAuthMethods: [
@@ -93,6 +96,7 @@ window.onGoogleYoloLoad = (googleyolo) => {
       // googleyolo.hint(...).then(...);
       const hintPromise = googleyolo.hint({
         supportedAuthMethods: [
+          "openyolo://id-and-password",
           "https://accounts.google.com"
         ],
         supportedIdTokenProviders: [
@@ -146,3 +150,9 @@ window.onGoogleYoloLoad = (googleyolo) => {
     }
   })
 }
+
+if (window.openyolo) {
+  window.openyolo.setProviderUrlBase('http://localhost:4201/openyolo-provider')
+  window.onGoogleYoloLoad(window.openyolo)
+}
+
