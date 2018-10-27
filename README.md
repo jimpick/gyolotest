@@ -1,6 +1,8 @@
 gyolotest
 =========
 
+![GIF Demo](openyolo.gif)
+
 ## Google "One Tap"
 
 * https://developers.google.com/identity/one-tap/web/get-started
