@@ -150,9 +150,11 @@ window.onGoogleYoloLoad = (googleyolo) => {
     }
   })
 }
+window.openyolo.setRenderMode('bottomSheet')
 
-if (window.openyolo) {
-  window.openyolo.setProviderUrlBase('http://localhost:4201/openyolo-provider')
+if (window.openyolo && !window.googleyolo) {
+  // window.openyolo.setProviderUrlBase('http://localhost:4201/openyolo-provider')
+  window.openyolo.setProviderUrlBase('https://barbican.jimpick.com/openyolo-provider')
   window.onGoogleYoloLoad(window.openyolo)
 }
 
